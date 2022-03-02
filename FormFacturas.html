@@ -69,28 +69,14 @@
       <div class="mb-3">
         <button type="submit" class="bt btn-primary">Enviar (onSubmit)</button>
       </div>
-
       <div class="mb-3">
         <button type="button" class="btn btn-primary" id="btn-submit">Enviar (con botón)</button>
       </div>
-
       <div class="alert alert-warning invisible" role="alert" id="miAlerta">
         Revisa los campos
       </div>
-      <div class="mb-3">
-        <label for="userEmail" class="form-label">Correo electrónico</label>
-        <input type="email" class="for-control" id="userEmail" placeholder="nombre@example.com">
-      </div>
-
-      <div class="mb-3">
-        <button type="button" class="btn btn-primary" id="btn-verificar">Verificar (en server)</button>
-      </div>
-
     </form>
   </div>
-
-
-
   <!-- Optional JavaScript; choose o|ne of the two! -->
 
   <!-- Option 1: Bootstrap Bundle with Popper -->
@@ -180,7 +166,7 @@
     let selectedValue = e.target.options[e.target.selectedIndex].text;
     //console.log(selectedValue);
     if(selectedValue !== 'Seleccionar Médico'){
-      divMensaje.textContent = `El paciente recibió atención médica por parte de uno de nuestros Doctores. Atendió: ${selectedValue}`;
+      divMensaje.textContent = 'El paciente recibió atención médica por parte de uno de nuestros Doctores. Atendió: ' + selectedValue;
     } else {
       divMensaje.innerHTML = '';
     }

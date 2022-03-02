@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- Content here -->
+    <h2>Factura: </h2>
+
+    <form id="formMedicamentos">
+
+      <div class="row mb-3">
+        <div class="col-md-2">
+          <label for="medicamentosDataList" class="form-label">ID Medicamento</label>
+          <input class="form-control" list="datalistOptions" id="medicamentosDataList" placeholder="Escribe para buscar..." onchange="actualizarInfo(this)">
+          <datalist id="datalistOptions">
+          </datalist>
+        </div>
+        <div class="col">
+          <label for="descripcion" class="form-label">Tipo de medicamento</label>
+          <input class="form-control"  id="descripcion" disabled>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col">
+
+          <label for="descripcion" class="form-label">Forma farmacéutica</label>
+          <input type="text" class="form-control" id="formaFarmaceutica" disabled>
+        </div>
+        <div class="col">
+          <label for="descripcion" class="form-label">Concentración</label>
+          <input type="text" class="form-control" id="concentracion" disabled>
+        </div>
+        <div class="col-md-2">
+          <label for="descripcion" class="form-label">Precio</label>
+          <input type="text" class="form-control" id="precio" disabled>
+        </div>
+
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="yes" id="atencionInterna">
+        <label class="form-check-label" for="atencionInterna">Atendido por médico interno</label>
+      </div>
+
+      <select class="form-select mb-3" aria-label="Default select example" id="atencionMedico" style="display:none">
+        <option selected>Seleccionar Médico</option>
+        <option value="01-Judith">Judith Lugo</option>
+        <option value="02-Martin">Martín Cásare</option>
+        <option value="03-María">María García</option>
+      </select>
+
+      <div id="leyendaAtencion"></div>
+    </form>
+  </div>
+  <!-- Optional JavaScript; choose o|ne of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+
+  <script>
+    window.addEventListener("load", loadInfoDataList);
+    const dtlMedicamentos = document.getElementById('datalistOptions');
+    
+  function loadInfoDataList(){
+    //Verificamos escribir en la consola del navegador: console.log('DataList');
+
+    //Invocamos la función dentro del servidor
+    google.script.run
+      .withSuccessHandler(cargarDataList)
+      .getDataMedicamentos()
+  }
+
+  function cargarDataList(getDataMedicamentos){
+    //Mostramos los datos del lado del cliente: console.log(getDataMedicamentos)
+    const inputMedicamentos = document.getElementById('datalistOptions');
+    // Iteramos a través de cada uno de los elementos
+    getDataMedicamentos.forEach( medicamento =>{
+      const option = document.createElement('option');
+      option.value = medicamento[0];
+      option.text = medicamento[1] + ', ' + medicamento[2] +', ' + medicamento[3];
+      // Accedemos a los elementos de las opciones usando datase seguido por el nombre del id de la opción
+      option.dataset.descripcion = medicamento[1];
+      option.dataset.formaFarm = medicamento[2];
+      option.dataset.concentracion = medicamento[3];
+      option.dataset.precio = medicamento[4];
+      inputMedicamentos.appendChild(option);
+    });
+  }
+
+  function actualizarInfo(datalist){
+      //console.log(datalist);
+      // Iteramos la lista de opciones para saber que elemento se seleccionó
+      for( let i=0; i<dtlMedicamentos.options.length; i++){
+        // Verificamos el valor seleccionado
+        if( dtlMedicamentos.options[i].value === datalist.value){
+          // Imprimimos el ID seleccionado: 
+          console.log('Se encontró el valor ' + datalist.value);
+          document.getElementById('descripcion').value = dtlMedicamentos.options[i].getAttribute("data-descripcion");
+          document.getElementById('formaFarmaceutica').value = dtlMedicamentos.options[i].getAttribute("data-forma-Farm");
+          document.getElementById('concentracion').value = dtlMedicamentos.options[i].getAttribute("data-concentracion");
+          document.getElementById('precio').value = dtlMedicamentos.options[i].getAttribute("data-precio");
+          break;
+          console.log(dtlMedicamentos.options[i].getAttribute('formaFarmaceutica'));
+        } else {
+          document.getElementById('descripcion').value = "";
+          document.getElementById('formaFarmaceutica').value = "";
+          document.getElementById('concentracion').value = "";
+          document.getElementById('precio').value = "";
+        }
+      }
+  }
+
+
+  const checkboxAtencion = document.getElementById("atencionInterna");
+  const selectMedico = document.getElementById("atencionMedico");
+  const divMensaje = document.getElementById("leyendaAtencion");
+
+  // Asignamos l evento al checkbos
+  checkboxAtencion.addEventListener('change', (e) => {
+    // Verificamos que funcione el checkbox: (true|false)
+    //console.log(e.target.checked);
+    if(e.target.checked === true){
+      selectMedico.style.display = "block";
+    }else{
+      selectMedico.style.display = "none";
+      divMensaje.innerHTML = '';
+    }
+  });
+
+  selectMedico.addEventListener('change', mostrarAtencion);
+
+  function mostrarAtencion(e){
+    // Verificamos las opciones del elemento:     console.log(e.target.options);
+    // Mostramos el texto de cada select
+    let selectedValue = e.target.options[e.target.selectedIndex].text;
+    //console.log(selectedValue);
+    if(selectedValue !== 'Seleccionar Médico'){
+      divMensaje.textContent = 'El paciente recibió atención médica por parte de uno de nuestros Doctores. Atendió: ' + selectedValue;
+    } else {
+      divMensaje.innerHTML = '';
+    }
+  }
+  </script>
+
+
+</body>
+
+</html>

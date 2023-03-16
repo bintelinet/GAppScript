@@ -1,30 +1,27 @@
 <script>
-
-    function handleFormSubmit( formObject ){
-    
-    //prevent the page form redirecting to url
+  window.addEventListener('load', function(){
+    console.log('Código del lado del cliente listo');
+  })
+  // Funciones a ejecutar de lado del servidor
+  function validarRespuesta( form ){
     event.preventDefault();
-    
-    
-    // run server side function
+    // Ahora ejecutamos una función del lado del servidor
     google.script.run
-    .withSuccessHandler( formsCreated )
-    .withFailureHandler( onFailure )
-    .init( formObject );
-    
-    }
-    
-    function formsCreated( value ){
-    
-    console.log( value );
-    
-        var div = document.getElementById('output');
-        div.innerHTML = '<font color ="green">Listo!'+ '</font><br/><br/>'
-        + value + '<br/><br/><br/>'
-        + '<input type="button" value ="Close" onclick ="google.script.host.close();"/>';
-    }
-    
-    function onFailure( error ){
-        console.log( error );
-    }
+      .withSuccessHandler(showSuccessMessage)
+      .withFailureHandler(showError)
+      .addRecord(form);   // Se ejecuta del lado del servidor cuando se presione el botón "Enviar"
+  }
+
+  function showSuccessMessage(answer){  
+    console.log(answer);  //Mandamos la respuesta del lado del servidor
+
+    var div = document.getElementById('output');
+    div.innerHTML = '<br/><h4><font color="green">' + answer + '</font></h4><br/><br/>'
+  }
+
+  function showError(error){
+    console.log(error); //Mandamos el erro del lado del servidor
+    var div = document.getElementById('output');
+    div.innerHTML = '<br/><h4><font color="red">Este taller ya no tiene cupo, recarga la página.</font></h4><br/><br/>'
+  }
 </script>

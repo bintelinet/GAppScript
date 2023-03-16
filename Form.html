@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('CSS'); ?>
+  </head>
+  <body>
+    <div id="output">
+      <form id="talleres" onSubmit="validarRespuesta(this)">
+        <h3> Selecciona el taller de tu preferencia</h3>
+        <? talleres.forEach( taller => { ?>
+        <input type="radio" name="talleres" value="<?=taller?>" /><?=taller ?><br/>
+        <? }); ?>
+        <br/>
+
+        <input type="submit" class="action" id="btnSubmit" class="action" value="Enviar"/>
+      </form>
+    </div>
+    <?!= include('JS'); ?>
+  </body>
+</html>

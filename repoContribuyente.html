@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <?!= include( 'CSS' ); ?>
+
+  <title>Repositorio Contribuyente</title>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Content here -->
+    <header>
+      <nav id="header-nav" class="navbar navbar-default">
+        <div class="navbar-header">
+          <a href=<?=ulrBusiness?> target="a_blank" class="pull-left visible-sm visible-md visible-lg">
+            <div id="logo-img" alt="Logo image"></div>
+          </a>
+
+          <div class="navbar-brand">
+            <a href=<?=ulrBusiness?> target="a_blank">
+              <h1 class="cpt"><?=nameBusiness?></h1>
+            </a>
+            <a href=<?=ulrBusiness?> target="a_blank">
+              <img src=<?=urlImgBusiness?> alt=<?=nameBusiness?>>
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <form id="formRepoContribuyentes" class="needs-validation" onsubmit="eventCrearRepoRFC(this)" novalidate>
+
+      <div class="row gy-2 gx-3 align-items-center">
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="DataList" class="form-label">RFC | Razón Social</label>
+            <input class="form-control" list="datalistRFC" id="DataList" placeholder="Buscar..."  onchange="updDatalistRFC(this)" required>
+            <datalist id="datalistRFC">
+            </datalist>
+            <div class="valid-feedback">Encontrado</div>
+            <div class="invalid-feedback">Introduce un RFC válido</div>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Razón Social</label>
+            <input class="form-control"  id="razonSocial" disabled>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Regimen Fiscal</label>
+            <input class="form-control"  id="regimenFiscal" disabled>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Domicilio Fiscal</label>
+            <input type="text" class="form-control" id="domicilioFiscal" disabled>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="phone1" disabled>
+          </div><br>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="" disabled>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="block-button">
+            <button type="submit" class="btn btn-primary botonAction" value="Crear" id="btn-crearRepoRFC" data-bs-toggle="modal" data-bs-target="#exampleModal">Crear</button>
+            <button type = "button" class="btn btn-outline-danger" value ="Cerrar" id="btn-cerrar" onclick="google.script.host.close();"/>Cerrar</button>
+          </div>
+          <hr>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col"><a class="btn btn-outline-primary containerCfdis" href=<?=urlFolderCtes?>
+              target="_blank">Carpetas de Clientes</a></div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <!-- Optional JavaScript; choose o|ne of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+
+  <script>
+    window.addEventListener("load", loadInfoDataList);
+    const dtlRFC = document.getElementById('datalistRFC');     
+    const btnCrearRepoRFC = document.getElementById('btn-crearRepoRFC');
+    btnCrearRepoRFC.addEventListener('click', eventCrearRepoRFC);
+    var rfc = '';
+
+function loadInfoDataList(){
+    //Verificamos escribir en la consola del navegador: console.log('DataListRFC');
+    //Invocamos la función dentro del servidor
+    google.script.run
+      .withSuccessHandler(cargarDataList)
+      .getPersonasFiscales()
+  }
+
+  function cargarDataList(getPersonasFiscales){
+    //Mostramos los datos del lado del cliente: console.log(getPersonasFiscales)    
+    
+    const inputRfc = document.getElementById('datalistRFC');
+    //  ['RFC', 'Razón Social', 'Cve Regimen Fiscal', 'Regimen Fiscal', 'RegIDTributario', 'Correo Empresarial', 'Teléfono 1', 'Domicilio Fiscal', 'Cve Servicio', 'Cve Periodicidad']
+    // Iteramos a través de cada uno de los elementos
+    getPersonasFiscales.forEach( rfc =>{
+      const option = document.createElement('option');
+      console.log(rfc[0]);
+      option.value = rfc[0];
+      option.text = rfc[0] + ' | ' + rfc[1];
+      // Accedemos a los elementos de las opciones usando dataset seguido por el nombre del id de la opción
+      option.dataset.razonsocial = rfc[1];
+      option.dataset.cveregimenfiscal = rfc[2];
+      option.dataset.regimenfiscal = rfc[3];
+      option.dataset.email = rfc[5];
+      option.dataset.phone1  = rfc[6];
+      option.dataset.domicilio = rfc[7];
+      inputRfc.appendChild(option);
+    });
+    
+  }
+
+  function updDatalistRFC(datalist){
+      // Iteramos la lista de opciones para saber que elemento se seleccionó
+      
+      rfc = ''; 
+      for( let i=0; dtlRFC.options.length; i++){
+        if (dtlRFC.options[i].value === datalist.value){
+          // Imprimimos el RFC seleccionado: 
+          rfc = datalist.value;
+          //console.log('Datlist RFC: ' + rfc);
+          document.getElementById('razonSocial').value = dtlRFC.options[i].getAttribute("data-razonsocial");          
+          document.getElementById('regimenFiscal').value = dtlRFC.options[i].getAttribute("data-cveregimenfiscal") +' | ' + dtlRFC.options[i].getAttribute("data-regimenfiscal");
+          document.getElementById('phone1').value = dtlRFC.options[i].getAttribute("data-phone1");
+          document.getElementById('userEmail').value = dtlRFC.options[i].getAttribute("data-email");
+          document.getElementById('domicilioFiscal').value = dtlRFC.options[i].getAttribute("data-domicilio");
+          break;
+        } else {
+          document.getElementById('razonSocial').value = ""; 
+          document.getElementById('regimenFiscal').value = "";          
+          document.getElementById('phone1').value = "";
+          document.getElementById('userEmail').value = "";
+          document.getElementById('domicilioFiscal').value = "";
+        }
+      }
+  }
+
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function () {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+
+
+function eventCrearRepoRFC(form){    
+  event.preventDefault();
+  
+  if (rfc !== '') {
+    const fecha = new Date();
+    const year = fecha.getFullYear();
+    console.log('Creando el Repositorio de "Contribuyente" del RFC: ' + rfc + ' para el ejercicio fiscal ' + year);        
+
+    // Ejecutamos la función crear Repositorio de Contribuyentes
+    google.script.run
+      .withSuccessHandler( message => {
+        console.log( message); })        
+      .createRepoRFC(rfc);
+    } else {
+      var message = '';
+      if (rfc == '') {message = 'Introduce el RFC a buscar';}   
+      google.script.run.alerta(message, 3);
+    }
+}
+  </script>
+</body>
+
+</html>

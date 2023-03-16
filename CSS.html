@@ -1,0 +1,278 @@
+<!-- <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"> -->
+
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+<!-- Add additional formatting styles -->
+<style>
+  :root {
+    --blue: #0054a1;
+    --light-blue: #2d77ac;
+    --red: #de3e31;
+    --green: #007f7f;
+    --light-grey: #efefef;
+  }
+
+  html {
+    background-color: #f8fbfd;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    cursor: pointer;
+  }
+
+  //***** NAVBAR *****///
+  .navbar-brand a:hover,
+  .navbar-brand a:focus {
+    text-decoration: none;
+  }
+
+  .navbar-brand {
+    padding-top: none;
+  }
+
+
+  .navbar-brand h1 {
+    padding-top: none;
+
+    color: var(--light-blue);
+    text-align: center;
+
+    font-family: 'Lora', serif;
+    font-size: 1.5em;
+    /*? 2em means 2 times the size of the current font ?*/
+    text-transform: uppercase;
+    font-weight: bold;
+    text-shadow: .2px .3px .3px #de3e31;
+    margin-top: auto;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+
+    line-height: .75;
+
+  }
+
+  //***** FIN NAVBAR ******//
+
+  h1 {
+    padding-top: none;
+
+    color: var(--light-blue);
+    text-align: center;
+
+    font-family: 'Lora', serif;
+    font-size: 1.5em;
+    /*? 2em means 2 times the size of the current font ?*/
+    text-transform: uppercase;
+    font-weight: bold;
+    text-shadow: .2px .3px .3px #de3e31;
+    margin-top: auto;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+
+    line-height: .75;
+  }
+
+
+  a {
+    text-decoration: none;
+    text-transform: bold;
+    color: var(--blue);
+  }
+
+  a:hover {
+    background-color: var(--blue) !important;
+  }
+
+  .quick-date {
+    width: 97%;
+    grid-column: 1/3;
+    border: 1px solid var(--btn-border-color);
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    background-color: var(--blue); //#0d6efd
+    font-size: 0.8rem;
+    appearance: none;
+    letter-spacing: .3px;
+  }
+
+  .btn-group {
+    width: 100px;
+  }
+
+  /*   input.btn {
+    background-color: #f8fbfd;
+    border: 1px solid rgb(50 50 93 / 30%);
+    border-color: #31325f;
+    color: #31325f;
+  } */
+
+  // CONTENEDOR DE CFDIS
+  .containerCfdis:hover {
+    color: #ffff !important;
+  }
+
+  .btn .btn-outline-primary:hover {
+    color: #ffff !important;
+    background-color: red !important;
+  }
+
+  .btn-outline-primary {
+    color: var(--blue);
+  }
+
+  // FIN DE CONTENEDOR DE CFDIS
+
+  // BOTON DE ACTIVAR FUNCION
+
+  .botonAction {
+    background-color: var(--blue);
+  }
+
+  .btn .btn-danger {
+    background-color: #f8fbfd;
+    border: 1px solid rgb(50 50 93 / 30%);
+    border-color: #31325f;
+    color: #31325f;
+  }
+
+
+  // INPUT DE CANCELAR
+  .btn .btn-danger {
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: .3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 10px;
+    transition: 0.3s;
+  }
+
+  btn-danger {
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: .3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 10px;
+    transition: 0.3s;
+  }
+
+  /*   button.btn {
+    border: 1px solid rgb(50 50 93 / 30%);
+    color: #f8fbfd;
+
+  } */
+
+  button .btn {
+    border: 0;
+    font-size: 800;
+    padding: 15;
+    height: 10;
+    width: 600;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  button {
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: .3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 10px;
+  }
+
+  //****** BOTONES *****//
+
+
+  // CHECKBOXES 
+
+  .form-check-input:hover {
+    background-color: var(--blue);
+  }
+
+  // FIN CHECKBOXES
+
+  #carpetaCfdis {
+    align-items: center;
+  }
+
+  .container {
+    display: grid;
+    height: 100vh;
+    align-content: start;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+
+
+  body {
+    padding: 25px;
+    color: var(--blue);
+    font-family: Lato, Helvetica, Arial, Lucida, sans-serif;
+  }
+
+  h2,
+  h8,
+  p,
+    {
+    color: var(--blue);
+    text-transform: uppercase;
+
+  }
+
+  img {
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+
+  / // INPUTS
+
+  .form-control {
+    display: block;
+    width: 100%;
+    align-items: center;
+  }
+
+  .block-button {
+    margin-right: auto;
+    margin-left: auto;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  //***** MODALS *****//
+</style>

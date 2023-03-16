@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <?!= include( 'CSS' ) ?>
+
+  <title>Distribuir CFDIs</title>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Content here -->
+    <header>
+      <nav id="header-nav" class="navbar navbar-default">
+        <div class="navbar-header">
+          <a href=<?=ulrBusiness?> target="a_blank" class="pull-left visible-sm visible-md visible-lg">
+            <div id="logo-img" alt="Logo image"></div>
+          </a>
+
+          <div class="navbar-brand">
+            <a href=<?=ulrBusiness?> target="a_blank">
+              <h1 class="cpt"><?=nameBusiness?></h1>
+            </a>
+            <a href=<?=ulrBusiness?> target="a_blank">
+              <img src=<?=urlImgBusiness?> alt=<?=nameBusiness?>>
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <form id="formExtraDataCFDIs" class="needs-validation" onsubmit="eventDistribuirCFDIs(this)" novalidate>
+
+      <div class="row gy-2 gx-3 align-items-center">
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" value="emitidas" id="checkboxEmitidas">
+          <label class="form-check-label" for="checkboxEmitidas">Emitidas</label>
+        </div>
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" value="recibidas" id="checkboxRecibidas">
+          <label class="form-check-label" for="checkboxRecibidas">Recibidas</label>
+        </div>
+
+        <!-- Mensaje que se muestra al seleccionar una opción  -->
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="block-button">
+            <button type="submit" class="btn btn-primary botonAction" value="Crear" id="btn-distribuirCFDIs">Distribuir</button>
+            <input type = "button" class="btn btn-outline-danger" value ="Cerrar" id="btn-cerrar" onclick="google.script.host.close();"/>
+          </div>
+          <hr>
+          <div class="row gy-2 gx-3 align-items-center">
+            <a class="btn btn-outline-primary containerCfdis" href="" target="_blank" id="contendorCfdis">Contenedor de CFDIs</a></button>
+            <a class="btn btn-outline-primary containerCfdis" href="" target="_blank" id="bitacora">Consultar Bitácora</a></button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+
+  <!-- Optional JavaScript; choose o|ne of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+
+  <script>
+    window.addEventListener("load", loadLinks);
+  const btnDistribuirCFDIs = document.getElementById('btn-distribuirCFDIs');
+  btnDistribuirCFDIs.addEventListener('click', eventDistribuirCfdis);
+  var chkEmitidas = null;  var chkRecibidas = null;
+
+   // Vinculos
+  const contendorCfdis = document.getElementById('contendorCfdis');
+  const btnBitacora = document.getElementById('bitacora');
+
+  function loadLinks(){
+    var fecha = new Date();
+    var anio = fecha.getFullYear().toString();
+    var idContenedorCfdis  = '1CJLlomZm6ul-2JEWzyiqkeD_pS1jDgBP';
+    google.script.run
+      .withSuccessHandler(datosArchivo)
+      .getArchivo(idContenedorCfdis, anio + '-Bitácora-CFDIs');
+
+    contendorCfdis.href = <?=urlContenedorCFDIs?>;
+    
+  }
+
+  function datosArchivo(dataArchivo){
+    //console.log(dataArchivo);
+    bitacora.href = dataArchivo.url;
+  }
+
+  //Checkboxes
+  chkboxEmitidas = document.getElementById('checkboxEmitidas');
+  chkboxRecibidas = document.getElementById('checkboxRecibidas');
+  var chkEmitidas = null; var chkRecibidas = null;
+  var checkedEmitidas = false; var checkedRecibidas = false;
+
+  // Asignamos el evento al checkbox
+  chkboxEmitidas.addEventListener('change', (e) => {
+    // Verificamos que funcione el checkbox: (true|false)  console.log(e.target.checked);
+    checkedEmitidas = e.target.checked;
+
+    if ( checkedEmitidas === true) {
+      chkEmitidas = chkboxEmitidas.value;
+      //console.log(chkEmitidas);
+    } else {      
+      chkEmitidas = '';
+    }
+  });
+
+  chkboxRecibidas.addEventListener('change', (e) => {
+    // Verificamos que funcione el checkbox: (true|false)  console.log(e.target.checked);
+    checkedRecibidas = e.target.checked;
+
+    if (checkedRecibidas === true) {
+      chkRecibidas = chkboxRecibidas.value;
+      //console.log(chkRecibidas);
+    } else {
+      chkRecibidas = '';
+    }
+  });
+
+var numChkBox = 0;
+function eventDistribuirCfdis(form) {
+  event.preventDefault();
+  //Deshabilitamos el boton distribuir
+  btnDistribuirCFDIs.disabled = true;
+
+  if (checkedEmitidas == false && checkedRecibidas == false){
+    console.log('Marque una opción');
+    //Deshabilitamos el boton distribuir
+    btnDistribuirCFDIs.disabled = false;
+    google.script.run.alerta('Marca al menos una opción', 3);
+  }
+
+  if (chkEmitidas == 'emitidas') {
+    console.log('Distribuyendo CFDIs ' + chkEmitidas);
+    // Ejecutamos la función para distribuir los CFDIs
+    google.script.run
+      .withSuccessHandler(sfDistributeCfdis)
+      .distributeCfdis(destinoCfdis = chkEmitidas);
+  }
+
+  if (chkRecibidas == 'recibidas') {
+    console.log('Distribuyendo CFDIs ' + chkRecibidas);
+    // Ejecutamos la función para distribuir los CFDIs
+    google.script.run
+      .withSuccessHandler(sfDistributeCfdis)
+      .distributeCfdis(destinoCfdis = chkRecibidas);
+  }
+
+}
+
+function sfDistributeCfdis(StatusDistributeCfdis){
+  // Se activaron las dos casillas de emitidas y recibidas
+
+  if (checkedEmitidas == true && checkedRecibidas == true){
+    // LLamar al modal para casillas
+    // Verifica si terminó la distribución para emitidas  
+    if (StatusDistributeCfdis.data[0] == 'emitidas'){
+      numChkBox++;
+      //numCfdisEmitidas
+      console.log(numChkBox + ') ' + StatusDistributeCfdis.data[0]);
+    } else  // Verifica si terminó la distribución para recibidas
+    if (StatusDistributeCfdis.data[0] == 'recibidas'){
+      numChkBox++;
+      console.log(numChkBox + ') ' + StatusDistributeCfdis.data[0]);
+    }
+    
+    if (numChkBox == 2) {
+    btnDistribuirCFDIs.disabled = !StatusDistributeCfdis.status;
+    numChkBox = 0;
+    }
+  }  else if (checkedEmitidas == true){
+    btnDistribuirCFDIs.disabled = !StatusDistributeCfdis.status;
+  }  else if (checkedRecibidas == true){
+    btnDistribuirCFDIs.disabled = !StatusDistributeCfdis.status;
+  }
+}
+
+  </script>
+
+</body>
+
+</html>

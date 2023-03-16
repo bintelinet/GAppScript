@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <?!= include( 'CSS' ) ?>
+
+  <title>Presentación de Declaraciones</title>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Content here -->
+    <header>
+      <nav id="header-nav" class="navbar navbar-default">
+        <div class="navbar-header">
+          <a href=<?=ulrBusiness?> target="a_blank" class="pull-left visible-sm visible-md visible-lg">
+            <div id="logo-img" alt="Logo image"></div>
+          </a>
+
+          <div class="navbar-brand">
+            <a href=<?=ulrBusiness?> target="a_blank">
+              <h1 class="cpt"><?=nameBusiness?></h1>
+            </a>
+            <a href=<?=ulrBusiness?> target="a_blank">
+              <img src=<?=urlImgBusiness?> alt=<?=nameBusiness?>>
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <form id="formCalcDeclaraSAT" class="needs-validation" onsubmit="eventPresentaDeclaraSAT(this)" novalidate>
+
+      <div class="row gy-2 gx-3 align-items-center">
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="DataList" class="form-label">RFC | Razón Social</label>
+            <input class="form-control" list="datalistRFC" id="DataList" placeholder="Buscar..."  onchange="updDatalistRFC(this)" required>
+            <datalist id="datalistRFC">
+            </datalist>
+            <div class="valid-feedback">Encontrado</div>
+            <div class="invalid-feedback">Introduce un RFC válido</div>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Razón Social</label>
+            <input class="form-control"  id="razonSocial" disabled>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <label for="descripcion" class="form-label">Regimen Fiscal</label>
+            <input class="form-control"  id="regimenFiscal" disabled>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <select class="quick-date" name="listaAnios"  id="listaAnios" maxlength="4">
+              <option value="select-anio" selected="selected" disabled>Selecciona el año</option>    
+            </select>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="col">
+            <select class="quick-date" name="listaMeses"  id="listaMeses" maxlength="4">
+              <option value="select-mes" selected="selected" disabled>Selecciona el mes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row gy-2 gx-3 align-items-center">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-primary" value="Limpiar" id="btn-limpiarDatos">Limpiar</button>
+            <button type="button" class="btn btn-primary botonAction" value="Presentar" id="btn-presentarDeclaracion">Presentar</button>
+            <button type = "button" class="btn btn-outline-danger" value ="Cerrar" id="btn-cerrar" onclick="google.script.host.close();"/>Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+
+
+  <script>
+    window.addEventListener("load", loadInfoDataList);
+    const dtlRFC = document.getElementById('datalistRFC'); 
+    const selectAnios = document.getElementById('listaAnios');
+    const selectMeses = document.getElementById('listaMeses');
+    const btnPresentaDeclaraSat = document.getElementById('btn-presentarDeclaracion');
+    btnPresentaDeclaraSat.addEventListener('click', eventPresentaDeclaraSAT);
+    const btnLimpiarDatos = document.getElementById('btn-limpiarDatos');
+    btnLimpiarDatos.addEventListener('click', eventLimpiarDatos);
+    var rfc = ''; var year = ''; var month = ''; var cveRegimen = ''; var cvePeriodo = ''; var numMeses = 0;
+
+  function loadInfoDataList(){
+    //Verificamos escribir en la consola del navegador: console.log('DataListRFC');
+    //Invocamos la función dentro del servidor
+    google.script.run
+      .withSuccessHandler(cargarDataList)
+      .getPersonasFiscales()
+  }
+
+  function cargarDataList(getPersonasFiscales){
+    //Mostramos los datos del lado del cliente: console.log(getPersonasFiscales)    
+    
+    const inputRfc = document.getElementById('datalistRFC');
+
+    // Iteramos a través de cada uno de los elementos
+    getPersonasFiscales.forEach( rfc =>{
+      //const fecha = new Date();
+      //const year = fecha.getFullYear();
+      const option = document.createElement('option');
+       //  ['RFC', 'Razón Social', 'Cve Regimen Fiscal', 'Regimen Fiscal', 'RegIDTributario', 'Correo Empresarial', 'Teléfono 1', 'Domicilio Fiscal', 'Cve Servicio', 'Cve Periodicidad']
+      option.value = rfc[0];
+      option.text = rfc[0] + ' | ' + rfc[1];
+      // Accedemos a los elementos de las opciones usando dataset seguido por el nombre del id de la opción
+      option.dataset.razonsocial = rfc[1];
+      option.dataset.cveregimenfiscal = rfc[2];
+      option.dataset.regimenfiscal = rfc[3];
+      option.dataset.cveperiodo = rfc[9];
+      option.dataset.listaAnios = 'select-anio';
+      option.dataset.listaMeses = 'select-mes';
+      inputRfc.appendChild(option);
+    });
+    //console.log(inputRfc);
+    
+  }
+
+  function cargarAniosMeses(getAniosMesesDeclaraSat){
+    const inputAnios = document.getElementById('listaAnios');
+    var anios = getAniosMesesDeclaraSat.anios
+    const inputMeses = document.getElementById('listaMeses');
+    var meses = getAniosMesesDeclaraSat.meses
+
+    anios.forEach( anio => {
+      const option = document.createElement('option');
+      option.value = anio;
+      option.text = anio;
+      inputAnios.appendChild(option);      
+    });
+    // Muestra el datalis de los años: console.log(inputAnios);
+
+    meses.forEach( mes => {
+      const option = document.createElement('option');
+      option.value = mes[0];
+      option.text = mes[1];
+      inputMeses.appendChild(option);
+    });
+    // Muestra el datalis de los meses: console.log(inputMeses);
+
+  }
+
+  function updDatalistRFC(datalist){
+
+      rfc = ''; year = 'select-anio';  month = 'select-mes';
+      for( let i=0; dtlRFC.options.length; i++){
+        if (dtlRFC.options[i].value === datalist.value){
+          // Imprimimos el RFC seleccionado: 
+          rfc = datalist.value;
+          //console.log('Datlist RFC: ' + rfc);
+          document.getElementById('razonSocial').value = dtlRFC.options[i].getAttribute("data-razonsocial");          
+          document.getElementById('regimenFiscal').value = dtlRFC.options[i].getAttribute("data-cveregimenfiscal") +' | ' 
+          + dtlRFC.options[i].getAttribute("data-regimenfiscal");
+          // Obtiene el RFC, cveREgimen y cvePeriodo del contribuyente seleccionado
+          cveRegimen = dtlRFC.options[i].getAttribute("data-cveregimenfiscal");
+          cvePeriodo = dtlRFC.options[i].getAttribute("data-cveperiodo");          
+
+          //Borra el contenido de los años del RFC seleccionado dejando solo la option 'SELECIONA EL AÑO'
+          selectAnios.options.length = 1;
+          //Borra el contenido de los meses del RFC seleccionado dejando solo la option 'SELECIONA EL MES'
+          selectMeses.options.length = 1;     
+
+          //Invocamos la función dentro del servidor
+          google.script.run
+          .withSuccessHandler(cargarAniosMeses)
+          .getAniosMesesDeclaraSat(rfc, cveRegimen, cvePeriodo);
+          console.log('RFC: ' + rfc + ' | Cve Regimen: ' + cveRegimen + ' | Cve Periodicidad: '+ cvePeriodo);
+          break;          
+        } else {
+          document.getElementById('razonSocial').value = ''; 
+          document.getElementById('regimenFiscal').value = '';
+          cveRegimen = '';
+          cvePeriodo = '';
+          //Borra el contenido de los años del RFC seleccionado dejando solo la option 'SELECIONA EL AÑO'
+          selectAnios.options.length = 1;
+          //Borra el contenido de los meses del RFC seleccionado dejando solo la option 'SELECIONA EL MES'
+          selectMeses.options.length = 1;
+          document.getElementById('listaAnios').value = 'select-anio';
+          document.getElementById('listaMeses').value = 'select-mes';          
+        }
+      }      
+  }
+
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function () {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+
+  function eventLimpiarDeclaracion(){
+    console.log('Limpiando datos de las declaraciones');
+    let sheetName = 'presentaDeclaraSAT';
+    let month = document.getElementById('listaMeses').value;
+    // Activa la hoja de trabajo
+    google.script.run.activeSheet(sheetName);
+    // Limpia el mes correspondiente
+    google.script.run.limpiarDeclaraSAT(sheetName, month);
+  }
+ 
+ 
+  
+  function eventPresentaDeclaraSAT(form) {
+    event.preventDefault();
+    let year = document.getElementById('listaAnios').value;
+    let month = document.getElementById('listaMeses').value;
+    //console.log('RFC: ' + rfc + ' Año: ' + year + ' Mes: ' + month + ' cveRegimen: ' + cveRegimen + ' cvePeriodo: ' + cvePeriodo);
+
+    if (rfc != '' && year != 'select-anio' && month != 'select-mes') {
+      btnLimpiarDeclaracion.disabled = true;
+      btnPresentaDeclaraSat.disabled = true;
+      // Activa la hoja de trabajo
+      var nameSheet = 'presentaDeclaraSAT';
+      google.script.run.activeSheet(nameSheet);
+
+      var meses = [['01-ene', 'Enero'], ['02-feb', 'Febrero'], ['03-mar', 'Marzo'], ['04-abr', 'Abril'], ['05-may', 'Mayo'], ['06-jun', 'Junio'], ['07-jul', 'Julio'], ['08-ago', 'Agosto'], ['09-sep', 'Septiembre'], ['10-oct', 'Octubre'], ['11-nov', 'Noviembre'], ['12-dic', 'Diciembre']];
+
+      if (month != '19-anual') {
+
+        for (i = 0; i < meses.length; i++) {
+          if (meses[i][0] == month) {
+            var selMonth = meses[i][1];
+            //console.log(month)
+            break;
+          }
+        }
+        console.log('RFC: ' + rfc + ' | Presentación de la Declaración Mensual de ' + selMonth + ' de ' + year);
+
+        // Ejecutamos la función para extraer datos de los CFDIs
+        google.script.run
+          .withSuccessHandler(sfPresentaDeclaracionSat)
+          .presentaDeclaracionSat(rfc, year, month, cveRegimen, cvePeriodo);
+
+      } else {
+        console.log('RFC: ' + rfc + ' | Presentación de la Declaración Anual ' + year);
+
+        meses.forEach(mes => {
+          var eachMonth = mes[0];
+          var nombre = mes[1];
+          console.log('Presentación de la Declaración Mensual de ' + eachMonth);
+
+          // Ejecutamos la función para extraer datos de los CFDIs
+          google.script.run
+            .withSuccessHandler(sfPresentaDeclaracionSatAnual)
+            .presentaDeclaracionSat(rfc, year, eachMonth, cveRegimen, cvePeriodo);
+
+        });
+
+      }
+
+    } else {
+      var message = '';
+      if (rfc == '') {message = 'Introduce el RFC a buscar' + '\n';}
+      if (year == 'select-anio') {message += 'Selecciona el año' + '\n';}
+      if (month == 'select-mes') {message += 'Selecciona el mes' + '\n';}
+      google.script.run.alerta(message, 3);
+    }
+
+  }
+
+  // Estado de la función para Calcular la Declaración Mensual
+  function sfPresentaDeclaracionSat(StatusPresentaDeclaraSat){
+    btnLimpiarDeclaracion.disabled = false;
+    btnPresentaDeclaraSat.disabled = !StatusPresentaDeclaraSat.status;
+  }
+
+  // Estado de la función para Calcular la Declaración Anual
+  function sfPresentaDeclaracionSatAnual(StatusPresentaDeclaraSat){
+    // Contabiliza cada vez que concluya la extracción de datos por cada mes
+    if (StatusPresentaDeclaraSat.status === true){
+      numMeses++;
+    }    
+    //console.log('Num de meses extraidos: ' + numMeses);
+    if ( numMeses == 12){
+      btnLimpiarDeclaracion.disabled = false;
+      btnPresentaDeclaraSat.disabled = !StatusPresentaDeclaraSat.status;      
+      numMeses = 0;
+    }
+    
+  }
+
+  // Estado de la función para Limpiar Datos de todos los mes
+  function sfLimpiarDatosAnual(StatusLimpiarDatos){
+    // Contabiliza cada vez que concluya la extracción de datos por cada mes
+    if (StatusLimpiarDatos.status === true){
+      numMeses++;
+    }    
+    //console.log('Num de meses extraidos: ' + numMeses);
+    if ( numMeses == 12){
+      // Activa la hoja de trabajo
+      google.script.run.activeSheet('01-ene-dataCFDI');
+      btnExtraerDataCFDIs.disabled = !StatusLimpiarDatos.status;
+      btnLimpiarDatos.disabled = !StatusLimpiarDatos.status;    
+      numMeses = 0;
+    }    
+  }
+
+  </script>
+</body>
+
+</html>
